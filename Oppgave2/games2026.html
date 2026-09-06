@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games2026</title>
+</head>
+
+<body>
+
+    <h1>Games2026</h1>
+    <div>
+        <button id="vis_alle_knapp">Vis alle</button>
+    </div>
+    <div>
+        <label>Konsoll</label>
+        <select id="valg_meny">
+            <option>PS5</option>
+            <option>Xbox Series X</option>
+            <option>Nintendo Switch 2</option>
+        </select>
+        <button id="konsoll_knapp">Vis etter konsoll</button>
+    </div>
+    <div>
+        <label>Kategori</label>
+        <input id="kategori_tekst" type="text">
+        <button id="kategori_knapp">Vis etter kategori</button>
+    </div>
+
+    <div id="utskrift"></div>
+
+    <script>
+
+        /* Henter alle knappene fra html */
+
+        const visAlleKnapp = document.getElementById("vis_alle_knapp");
+        const konsollKnapp = document.getElementById("konsoll_knapp");
+        const kategoriKnapp = document.getElementById("kategori_knapp");
+
+        /* Array med flere objekter for enkel henting av informasjon */
+
+        let spill = [
+            {
+                tittel: "GTA VI",
+                kategori: "Action",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/en/4/46/Grand_Theft_Auto_VI.png",
+                år: 2027,
+                utgiver: "Rockstar",
+                konsoll: "PS5"
+            },
+            {
+                tittel: "Mario Kart",
+                kategori: "Racing",
+                bildenavn: "https://static.posters.cz/image/750/50037.jpg",
+                år: 2017,
+                utgiver: "Nintendo",
+                konsoll: "Nintendo Switch 2"
+            },
+            {
+                tittel: "Fable",
+                kategori: "RPG",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/en/b/b8/Fable_key_art.png",
+                år: 2026,
+                utgiver: "Microsoft",
+                konsoll: "Xbox Series X"
+            },
+            {
+                tittel: "Spider man",
+                kategori: "Action",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/en/e/e1/Spider-Man_PS4_cover.jpg",
+                år: 2018,
+                utgiver: "Sony",
+                konsoll: "PS5"
+            },
+            {
+                tittel: "Red Dead Redemtion 2",
+                kategori: "Action",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/en/4/44/Red_Dead_Redemption_II.jpg",
+                år: 2018,
+                utgiver: "Rockstar",
+                konsoll: "PS5"
+            },
+            {
+                tittel: "Minecraft",
+                kategori: "Adventure",
+                bildenavn: "https://cdn.pji.nu/product/standard/280/7270577.jpg",
+                år: 2020,
+                utgiver: "Mojang",
+                konsoll: "Xbox Series X"
+            },
+            {
+                tittel: "God of war",
+                kategori: "RPG",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/en/a/a7/God_of_War_4_cover.jpg",
+                år: 2018,
+                utgiver: "Sony",
+                konsoll: "PS5"
+            },
+            {
+                tittel: "Fifa 23",
+                kategori: "Sport",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a6/FIFA_23_Cover.jpg/250px-FIFA_23_Cover.jpg",
+                år: 2022,
+                utgiver: "EA",
+                konsoll: "Xbox Series X"
+            },
+            {
+                tittel: "Pokemon",
+                kategori: "Adventure",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pokémon_logo.svg/1280px-International_Pokémon_logo.svg.png",
+                år: 2019,
+                utgiver: "Nintendo",
+                konsoll: "Nintendo Switch 2"
+            },
+            {
+                tittel: "Call of duty",
+                kategori: "Action",
+                bildenavn: "https://upload.wikimedia.org/wikipedia/en/thumb/c/c9/Call_of_Duty_Black_Ops_6_Key_Art.png/250px-Call_of_Duty_Black_Ops_6_Key_Art.png",
+                år: 2024,
+                utgiver: "Activision",
+                konsoll: "Xbox Series X"
+            }
+        ];
+
+        /* Tømmer først listen før den eventuelt skriver listen til spillene */
+
+        function skrivUt(liste) {
+            document.getElementById("utskrift").innerHTML = "";
+
+            for (let i = 0; i < liste.length; i++) {
+                document.getElementById("utskrift").innerHTML += `
+            <h3>${liste[i].tittel}</h3>
+            <img src=${liste[i].bildenavn} width="200px">
+            <p>Kategori: ${liste[i].kategori}</p>
+            <p>År: ${liste[i].år}</p>
+            <p>Utgiver: ${liste[i].utgiver}</p>
+        `;
+            }
+        };
+
+        /* Funksjonen for vis alle knappen */
+
+        function visAlle() {
+            skrivUt(spill);
+        };
+
+        /* Funksjonen for vis etter konsoll knappen */
+
+        function visKonsoll() {
+            let valgt = document.getElementById("valg_meny").value;
+            let resultat = [];
+
+            for (let i = 0; i < spill.length; i++) {
+                if (spill[i].konsoll == valgt) {
+                    resultat.push(spill[i]);
+                }
+            }
+            skrivUt(resultat);
+        };
+
+        /* Funksjonen til vis etter kategori knappen,
+        toLowerCase og includes så bruker ikke trenger å skrive inn alt for å søke og at den ikke er sensitiv på store bokstaver */
+
+        function visKategori() {
+            let valgt = document.getElementById("kategori_tekst").value.toLowerCase();
+            let resultat = [];
+
+            for (let i = 0; i < spill.length; i++) {
+                if (spill[i].kategori.toLowerCase().includes(valgt)) {
+                    resultat.push(spill[i]);
+                }
+            }
+
+            if (resultat.length === 0) {
+                document.getElementById("utskrift").innerHTML =
+                    `<p>Fant ingen spill i kategorien "${valgt}"</p>`;
+            } else {
+                skrivUt(resultat);
+            }
+        }
+
+        /* Bruker onclick til å gjøre funksjonene når knappene trykkes */
+
+        visAlleKnapp.onclick = visAlle;
+        konsollKnapp.onclick = visKonsoll;
+        kategoriKnapp.onclick = visKategori;
+
+    </script>
+
+</body>
+
+</html>

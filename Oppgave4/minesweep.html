@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweep</title>
+</head>
+
+<body>
+    <h1>Minesweep</h1>
+    <p>Du starter med 1000 poeng. Velg innsats og prøv å unngå bomben.</p>
+    <h3 id="poeng_tekst"></h3>
+    <h3 id="gevinst_tekst"></h3>
+    <h3 id="trygge_tekst"></h3>
+
+    <div>
+        <label>Innsats:</label>
+        <input id="innsats_input" type="number">
+        <input id="start_knapp" type="button" value="Start runde">
+        <input id="ta_ut_knapp" type="button" value="Ta ut gevinst">
+    </div>
+
+    <p id="melding"></p>
+
+    <div id="spillbrett">
+        <div>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+        </div>
+        <div>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+        </div>
+        <div>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+        </div>
+        <div>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+            <button>?</button>
+        </div>
+    </div>
+
+    <script>
+
+        const poengTekst = document.getElementById("poeng_tekst");
+        const gevinstTekst = document.getElementById("gevinst_tekst");
+        const tryggeTekst = document.getElementById("trygge_tekst");
+        const innsatsInput = document.getElementById("innsats_input");
+        const startKnapp = document.getElementById("start_knapp");
+        const taUtKnapp = document.getElementById("ta_ut_knapp");
+        const melding = document.getElementById("melding");
+
+        const spillbrett = document.getElementById("spillbrett");
+        spillbrett.style.display = "flex";
+        spillbrett.style.flexDirection = "column";
+        spillbrett.style.gap = "10px";
+        spillbrett.style.marginLeft = "100px";
+
+        /* Henter ut alle elementer i html med <button></button> */
+
+        const alleKnapper = document.getElementsByTagName("button");
+
+        /* For å gjøre alle knappene til en viss størrelse gjennom en løkke */
+
+        for (let i = 0; i < alleKnapper.length; i++) {
+            alleKnapper[i].style.height = "75px";
+            alleKnapper[i].style.width = "75px";
+        }
+
+        /* variabler */
+
+        let poeng = 1000;
+        let innsats = 0;
+        let bombePlass = 0;
+        let tryggeRuter = 0;
+        let muligGevinst = 0;
+        let rundeAktiv = false;
+
+        /* For å gi bomben en tilfeldig plass */
+
+        function randomBombe() {
+            return Math.floor(Math.random() * alleKnapper.length);
+        }
+
+        /* Regner ut gevinsten og ganger antall riktig ruter med innsatsen og 0,25 og plusser det med innsatsen igjen */
+
+        function gevinstUtregning() {
+            return innsats + (tryggeRuter * innsats * 0.25);
+        }
+
+        /* Endrer på teksten avhengig av hva brukeren gjør */
+
+        function oppdaterTekst() {
+            poengTekst.innerHTML = `Poeng: ${poeng}`;
+            gevinstTekst.innerHTML = `Mulig gevinst: ${muligGevinst} poeng`;
+            tryggeTekst.innerHTML = `Trygge ruter: ${tryggeRuter}`;
+        }
+
+        function visMelding(tekst) {
+            melding.innerHTML = tekst;
+        }
+
+        /* Gjør brettet klart før og etter hver runde, disabled = false så knappene kan trykkes på */
+
+        function nullstillBrett() {
+            for (let i = 0; i < alleKnapper.length; i++) {
+                alleKnapper[i].innerHTML = "?";
+                alleKnapper[i].style.backgroundColor = "white";
+                alleKnapper[i].disabled = false;
+            }
+        }
+
+        /* Deaktivert brett når det ikke er noe innsats eller tap, disabled = true så knappene ikke kan trykkes */
+
+        function deaktiverBrett() {
+            for (let i = 0; i < alleKnapper.length; i++) {
+                alleKnapper[i].disabled = true;
+            }
+        }
+
+        /* funksjon til å vise hvor bomben var når brukeren taper eller tar ut gevinsten */
+
+        function visBombe() {
+            alleKnapper[bombePlass].innerHTML = "BOOOMB!";
+            alleKnapper[bombePlass].style.backgroundColor = "red";
+        }
+
+        /* Starter en runde etter å ha oppgitt innsats, gir bomben en tilfeldig plass og gjør knappene trykkbare */
+
+        function startRunde() {
+            if (rundeAktiv) {
+                visMelding("Du må fullføre runden før du starter en ny.");
+                return;
+            }
+
+            innsats = Number(innsatsInput.value);
+
+            if (innsats <= 0) {
+                visMelding("Du må skrive inn en innsats som er større enn 0.");
+                return;
+            }
+
+            if (innsats > poeng) {
+                visMelding("Du har ikke nok poeng til den innsatsen.");
+                return;
+            }
+
+            poeng = poeng - innsats;
+            bombePlass = randomBombe();
+            tryggeRuter = 0;
+            muligGevinst = innsats;
+            rundeAktiv = true;
+
+            console.log(bombePlass);
+            nullstillBrett();
+            oppdaterTekst();
+            visMelding("Runden har startet. Ikke trykk på bomben!");
+        }
+
+        /* Funksjon til når brukeren trykker på knappen med bomben bak */
+
+        function tapRunde(i) {
+            alleKnapper[i].innerHTML = "BOOOMB!";
+            alleKnapper[i].style.backgroundColor = "red";
+
+            rundeAktiv = false;
+            muligGevinst = 0;
+
+            deaktiverBrett();
+            oppdaterTekst();
+
+            visMelding("BOOM! Du traff bomben og tapte innsatsen.");
+
+            setTimeout(function () {
+                visMelding("Start en ny runde når du er klar.");
+            }, 2500);
+        }
+
+        /* Når brukeren klarer hele ruten uten å trykke på bomben */
+
+        function vinnTryggRute(i) {
+            alleKnapper[i].innerHTML = ":)";
+            alleKnapper[i].style.backgroundColor = "lightgreen";
+            alleKnapper[i].disabled = true;
+
+            tryggeRuter++;
+            muligGevinst = gevinstUtregning();
+            oppdaterTekst();
+            visMelding("Trygg rute! Du kan fortsette eller ta ut gevinsten.");
+
+            if (tryggeRuter === alleKnapper.length - 1) {
+                poeng = poeng + muligGevinst;
+                rundeAktiv = false;
+                deaktiverBrett();
+                visBombe();
+                visMelding(`Du fant alle trygge ruter! Du vant ${muligGevinst} poeng.`);
+                muligGevinst = 0;
+                oppdaterTekst();
+            }
+        }
+
+        /* Funksjon som bestemmer hva som skjer når brukeren trykker på en knapp */
+
+        function velgRute(i) {
+            if (i === bombePlass) {
+                tapRunde(i);
+                return;
+            }
+
+            vinnTryggRute(i);
+        }
+
+        /* Funksjon som lar brukeren ta ut gevinst */
+
+        function taUtGevinst() {
+            if (!rundeAktiv) {
+                visMelding("Du har ingen aktiv runde.");
+                return;
+            }
+
+            if (tryggeRuter === 0) {
+                visMelding("Du må finne minst én trygg rute før du kan ta ut gevinst.");
+                return;
+            }
+
+            poeng = poeng + muligGevinst;
+            rundeAktiv = false;
+            deaktiverBrett();
+            visBombe();
+            visMelding(`Du tok ut ${muligGevinst} poeng!`);
+            muligGevinst = 0;
+            oppdaterTekst();
+        }
+
+        /* Denne funksjonen gir hver knapp i spillet en onclick funksjon */
+
+        for (let i = 0; i < alleKnapper.length; i++) {
+            alleKnapper[i].onclick = function () {
+                velgRute(i);
+            };
+        }
+
+        /* Gjør funksjonene startRunde og taUtGevinst når de knappene trykkes */
+
+        startKnapp.addEventListener("click", startRunde);
+        taUtKnapp.addEventListener("click", taUtGevinst);
+
+        /* Siden skal være deaktivert når siden lastes inn */
+
+        deaktiverBrett();
+        oppdaterTekst();
+
+
+    </script>
+
+</body>
+
+</html>

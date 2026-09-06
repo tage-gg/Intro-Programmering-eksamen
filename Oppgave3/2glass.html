@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Glass</title>
+</head>
+
+<body>
+
+    <h1>2 glass</h1>
+
+    <div>
+        <label>Hvilket glass (1 eller 2) skal fylles på?</label>
+        <input id="fylle_tekst" type="number">
+        <button id="appelsinjuice">Fyll på appelsinjuice</button>
+        <button id="druejuice">Fyll på druejuice</button>
+    </div>
+    <br></br>
+    <div>
+        <label>Hvilket glass (1 eller 2) skal drikkes av?</label>
+        <input id="drikke_tekst" type="number">
+        <button id="drikke_knapp">Drikk</button>
+    </div>
+
+    <p id="melding"></p>
+
+    <div id="glass_container">
+        <div id="glass_1"></div>
+        <div id="glass_2"></div>
+    </div>
+
+
+    <script>
+
+        const fylleTekst = document.getElementById("fylle_tekst");
+        const appelsinjuiceKnapp = document.getElementById("appelsinjuice");
+        const druejuiceKnapp = document.getElementById("druejuice");
+
+        const drikkeTekst = document.getElementById("drikke_tekst");
+        const drikkeKnapp = document.getElementById("drikke_knapp");
+        const melding = document.getElementById("melding");
+
+        /* Henter html id og brukes css til å lage en god beholder for glassene */
+
+        const glassContainer = document.getElementById("glass_container");
+        glassContainer.style.display = "flex";
+        glassContainer.style.gap = "20px";
+
+        /* Henter glassene og gjør dem synlig ved hjelp av css */
+
+        const glass1 = document.getElementById("glass_1");
+        glass1.style.height = "300px";
+        glass1.style.width = "100px";
+        glass1.style.border = "2px solid black";
+        glass1.style.display = "flex";
+        glass1.style.justifyContent = "center";
+        const glass2 = document.getElementById("glass_2");
+        glass2.style.height = "300px";
+        glass2.style.width = "100px";
+        glass2.style.border = "2px solid black";
+        glass2.style.display = "flex";
+        glass2.style.justifyContent = "center";
+
+        /* Gjør at når glassene er true er de fult og false er det tom. */
+
+        let glass1ErFullt = false;
+        let glass2ErFullt = false;
+
+        /* Funksjon for at brukeren skal få beksjed om hva han/hun har gjort */
+
+        function visMelding(tekst) {
+            melding.innerHTML = tekst;
+        }
+
+        /* Endrer på teksten i henhold til om den er full eller tom */
+
+        function oppdaterGlassTekst() {
+            if (glass1ErFullt) {
+                glass1.textContent = "Glass 1 er full";
+            } else {
+                glass1.textContent = "Glass 1 er tom";
+            }
+
+            if (glass2ErFullt) {
+                glass2.textContent = "Glass 2 er full";
+            } else {
+                glass2.textContent = "Glass 2 er tom";
+            }
+        }
+
+        /* Skriver ut funksjonen under slik at den allerede er det når brukeren åpner siden */
+
+        oppdaterGlassTekst();
+
+        /* Funksjoner for å fylle appelsinjuice og druejuice i de valgte
+        glassene og gi feilmelding om det er fult eller om tallet ikke stemmer overens */
+
+        function fyllPåAppelsin() {
+            let tall = fylleTekst.value;
+
+            if (tall === "1") {
+                if (glass1ErFullt) {
+                    visMelding("Det er ikke mulig. Glass 1 er allerede fullt.");
+                    return;
+                }
+
+                glass1.style.backgroundColor = "orange";
+                glass1ErFullt = true;
+                oppdaterGlassTekst();
+                visMelding("Du fylte glass 1 med appelsinjuice.");
+            } else if (tall === "2") {
+                if (glass2ErFullt) {
+                    visMelding("Det er ikke mulig. Glass 2 er allerede fullt.");
+                    return;
+                }
+
+                glass2.style.backgroundColor = "orange";
+                glass2ErFullt = true;
+                oppdaterGlassTekst();
+                visMelding("Du fylte glass 2 med appelsinjuice.");
+            } else {
+                visMelding("Det glasset finnes ikke. Velg glass 1 eller 2.");
+            }
+        }
+
+        function fyllPåDrue() {
+            let tall = fylleTekst.value;
+
+            if (tall === "1") {
+                if (glass1ErFullt) {
+                    visMelding("Det er ikke mulig. Glass 1 er allerede fullt.");
+                    return;
+                }
+
+                glass1.style.backgroundColor = "purple";
+                glass1ErFullt = true;
+                oppdaterGlassTekst();
+                visMelding("Du fylte glass 1 med druejuice.");
+            } else if (tall === "2") {
+                if (glass2ErFullt) {
+                    visMelding("Det er ikke mulig. Glass 2 er allerede fullt.");
+                    return;
+                }
+
+                glass2.style.backgroundColor = "purple";
+                glass2ErFullt = true;
+                oppdaterGlassTekst();
+                visMelding("Du fylte glass 2 med druejuice.");
+            } else {
+                visMelding("Det glasset finnes ikke. Velg glass 1 eller 2.");
+            }
+        }
+
+        /* For å velge glass å drikke opp fra og gi feilmelding om det er tomt */
+
+        function drikkOpp() {
+            let tall = drikkeTekst.value;
+
+            if (tall === "1") {
+                if (!glass1ErFullt) {
+                    visMelding("Det er ikke mulig. Glass 1 er allerede tomt.");
+                    return;
+                }
+
+                glass1.style.backgroundColor = "white";
+                glass1ErFullt = false;
+                oppdaterGlassTekst();
+                visMelding("Du drakk opp glass 1.");
+            } else if (tall === "2") {
+                if (!glass2ErFullt) {
+                    visMelding("Det er ikke mulig. Glass 2 er allerede tomt.");
+                    return;
+                }
+
+                glass2.style.backgroundColor = "white";
+                glass2ErFullt = false;
+                oppdaterGlassTekst();
+                visMelding("Du drakk opp glass 2.");
+            } else {
+                visMelding("Det glasset finnes ikke. Velg glass 1 eller 2.");
+            }
+        }
+
+        /* Henter ut alle verdier og funksjoner ved klikk på knappene */
+
+        appelsinjuiceKnapp.onclick = fyllPåAppelsin;
+        druejuiceKnapp.onclick = fyllPåDrue;
+        drikkeKnapp.onclick = drikkOpp;
+
+
+    </script>
+</body>
+
+</html>
